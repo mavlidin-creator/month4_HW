@@ -1,21 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Краткое содержание книги</title>
-</head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ book_id.title }}</title>
     <style>
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio (9 / 16 = 0.5625) */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             max-width: 100%;
             background: #000;
             margin-top: 20px;
         }
-
         .video-container iframe {
             position: absolute;
             top: 0;
@@ -24,14 +22,51 @@
             height: 100%;
         }
     </style>
+</head>
 <body>
 
-    <h1>{{ book_id.title  }}</h1>
-    <img src="{{book_id.image.url}}" alt="" width="200" height="200">
-    <p>{{book_id.description}}</p>
-    <p>{{book_id.type_book}}</p>
-    <p>{{book_id.created_at}}</p>
-    <iframe src="book_id.audio_recording" frameborder="0" width="500px" height="300px"></iframe>
+    <h1>{{ book_id.title }}</h1>
+    <img src="{{ book_id.image.url }}" alt="Обложка книги" width="200" height="200" />
+    <p>{{ book_id.description }}</p>
+    <p>Жанр: {{ book_id.type_book }}</p>
+    <p>Добавлено: {{ book_id.created_at }}</p>
 
-</body>
-</html>
+    <div class="video-container">
+        <iframe src="{{ book_id.audio_recording }}" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <hr>
+
+    <h2>Средний рейтинг: {{ average_rating|default:'нет оценок' }}</h2>
+<h3>Отзывы:</h3>
+{% if reviews %}
+    <ul>
+        {% for review in reviews %}
+        <li>
+            {% if review.author %}
+                <strong>Автор:</strong> {{ review.author.username }}
+            {% else %}
+                <strong>Автор:</strong> Неизвестен
+            {% endif %}<br>
+
+            <strong>Оценка:</strong> {{ review.rating}}<br>
+            <strong>Комментарий:</strong> {{ review.text }}<br>
+            <em>Добавлено: {{ review.created_at }}</em>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Пока нет отзывов.</p>
+{% endif %}
+
+<hr>
+{% if user.is_authenticated %}
+    <h3>Добавить отзыв:</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Отправить</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв.</p>
+{% endif %}
