@@ -6,6 +6,8 @@
     <title>Интересные книги</title>
 </head>
 <body>
+    <a href="{% url 'basket_list' %}" target="_blank">Basket</a>
+    <a href="admin/" target="_blank">Админка</a>
     <ol>
         {% for i in book_list %}
         <li>
