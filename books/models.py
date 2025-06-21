@@ -52,3 +52,9 @@ class Review(models.Model):
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
 
+class BookProfile(models.Model):
+    book = models.OneToOneField(Book, on_delete=models.CASCADE)
+    extra_info = models.TextField()
+
+    def __str__(self):
+        return f"Профиль книги: {self.book.title}"

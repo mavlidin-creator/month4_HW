@@ -2,15 +2,35 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from . import models
 from .forms import ReviewForm
+from .models import Book
+from django.core.paginator import Paginator
 
 def book_list_view(request):
-  if request.method == 'GET':
-    book_list = models.Book.objects.all().order_by('-id')
+    query = request.GET.get('q')
+    if query:
+        book_list = Book.objects.filter(title__icontains=query).order_by('-id')
+    else:
+        book_list = Book.objects.all().order_by('-id')
+
+    paginator = Paginator(book_list, 2)
+    page = request.GET.get("page")
+    page_obj = paginator.get_page(page)
+
     context = {
-      'book_list': book_list
+        'book_list': page_obj,
+        'page_obj': page_obj,
+        'paginator': paginator,
+        'query': query,
     }
-    return render(request, template_name='books.html', context=context  )
+    return render(request, 'books.html', context)
   
+def search_view(request):
+    query = request.GET.get('q')
+    if query:
+        books = Book.objects.filter(title__icontains=query)
+    else:
+        books = Book.objects.all()
+    return render(request, 'books/book_list.html', {'book_list': books})
 
 
 def book_detail_view(request, id):

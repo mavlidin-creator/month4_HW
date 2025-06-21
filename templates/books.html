@@ -1,22 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Интересные книги</title>
 </head>
 <body>
-    <a href="{% url 'basket_list' %}" target="_blank">Basket</a>
-    <a href="admin/" target="_blank">Админка</a>
-    <a href="{% url 'users:register' %}">Регистрация</a>
-    <ol>
-        {% for i in book_list %}
-        <li>
-            <p>{{i.title}}</p>
-            <p>{{i.created_art}}</p>
-            <button><a href="/new_book/{{ i.id }}/">Читать подробнее</a></button>
-        </li>
+    <nav>
+        <a href="{% url 'basket_list' %}" target="_blank">Корзина</a> |
+        <a href="/admin/" target="_blank">Админка</a> |
+        <a href="{% url 'users:register' %}">Регистрация</a>
+    </nav>
+
+    <h1>Список книг</h1>
+
+    <form method="get">
+        <input type="text" name="q" placeholder="Поиск книг" value="{{ request.GET.q }}">
+        <button type="submit">Поиск</button>
+    </form>
+
+    <ul>
+        {% for book in page_obj %}
+            <li>
+                <p>{{ book.title }}</p>
+                <p>{{ book.created_at }}</p>
+                <a href="/new_book/{{ book.id }}/">Читать подробнее</a>
+            </li>
+        {% empty %}
+            <li>Книги не найдены.</li>
         {% endfor %}
-    </ol>
+    </ul>
+
+    <div>
+        {% if page_obj.has_previous %}
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page=1">« Первая</a>
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page_obj.previous_page_number }}">‹ Предыдущая</a>
+        {% endif %}
+
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page_obj.next_page_number }}">Следующая ›</a>
+            <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page_obj.paginator.num_pages }}">Последняя »</a>
+        {% endif %}
+    </div>
+
 </body>
 </html>

@@ -1,0 +1,16 @@
+<h1>Продукты</h1>
+
+<div>
+    <a href="{% url 'product_list' %}">Все</a>
+    {% for tag in tags %}
+        <a href="?tag={{ tag.name }}">#{{ tag.name }}</a>
+    {% endfor %}
+</div>
+
+<ul>
+    {% for product in products %}
+        <li>{{ product.title }} — {{ product.description }}</li>
+    {% empty %}
+        <li>Нет товаров</li>
+    {% endfor %}
+</ul>

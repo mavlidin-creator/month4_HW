@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -25,8 +25,12 @@
 </head>
 <body>
 
+    <nav>
+        <a href="/">На главную</a>
+    </nav>
+
     <h1>{{ book_id.title }}</h1>
-    <img src="{{ book_id.image.url }}" alt="Обложка книги" width="200" height="200" />
+    <img src="{{ book_id.image.url }}" alt="Обложка книги" width="200" height="200">
     <p>{{ book_id.description }}</p>
     <p>Жанр: {{ book_id.type_book }}</p>
     <p>Добавлено: {{ book_id.created_at }}</p>
@@ -38,35 +42,41 @@
     <hr>
 
     <h2>Средний рейтинг: {{ average_rating|default:'нет оценок' }}</h2>
-<h3>Отзывы:</h3>
-{% if reviews %}
-    <ul>
-        {% for review in reviews %}
-        <li>
-            {% if review.author %}
-                <strong>Автор:</strong> {{ review.author.username }}
-            {% else %}
-                <strong>Автор:</strong> Неизвестен
-            {% endif %}<br>
 
-            <strong>Оценка:</strong> {{ review.rating}}<br>
-            <strong>Комментарий:</strong> {{ review.text }}<br>
-            <em>Добавлено: {{ review.created_at }}</em>
-        </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>Пока нет отзывов.</p>
-{% endif %}
+    <h3>Отзывы:</h3>
+    {% if reviews %}
+        <ul>
+            {% for review in reviews %}
+                <li>
+                    <strong>Автор:</strong>
+                    {% if review.author %}
+                        {{ review.author.username }}
+                    {% else %}
+                        Неизвестен
+                    {% endif %}<br>
 
-<hr>
-{% if user.is_authenticated %}
-    <h3>Добавить отзыв:</h3>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Отправить</button>
-    </form>
-{% else %}
-    <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв.</p>
-{% endif %}
+                    <strong>Оценка:</strong> {{ review.rating }}<br>
+                    <strong>Комментарий:</strong> {{ review.text }}<br>
+                    <em>Добавлено: {{ review.created_at }}</em>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Пока нет отзывов.</p>
+    {% endif %}
+
+    <hr>
+
+    {% if user.is_authenticated %}
+        <h3>Добавить отзыв:</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Отправить</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить отзыв.</p>
+    {% endif %}
+
+</body>
+</html>
