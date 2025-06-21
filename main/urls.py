@@ -7,11 +7,13 @@ from basket import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('books.urls')),
+    path('', include('users.urls')),
     path('new_book/', include('books.urls')),
     path('baskets/', views.basket_list, name='basket_list'),
     path('baskets/create/', views.basket_create, name='basket_create'),
     path('baskets/<int:pk>/update/', views.basket_update, name='basket_update'),
     path('baskets/<int:pk>/delete/', views.basket_delete, name='basket_delete'),
+    path('captcha/', include('captcha.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

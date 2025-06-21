@@ -8,6 +8,7 @@
 <body>
     <a href="{% url 'basket_list' %}" target="_blank">Basket</a>
     <a href="admin/" target="_blank">Админка</a>
+    <a href="{% url 'users:register' %}">Регистрация</a>
     <ol>
         {% for i in book_list %}
         <li>
